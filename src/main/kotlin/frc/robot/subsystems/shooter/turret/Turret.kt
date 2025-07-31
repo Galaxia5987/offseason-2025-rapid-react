@@ -6,9 +6,9 @@ import edu.wpi.first.wpilibj.DigitalInput
 import edu.wpi.first.wpilibj2.command.SubsystemBase
 import edu.wpi.first.wpilibj2.command.button.Trigger
 import frc.robot.lib.extensions.deg
-import frc.robot.lib.extensions.get
 import frc.robot.lib.extensions.rot
 import frc.robot.lib.universal_motor.UniversalTalonFX
+import java.util.function.Supplier
 import org.littletonrobotics.junction.Logger
 
 class Turret : SubsystemBase() {
@@ -28,10 +28,14 @@ class Turret : SubsystemBase() {
         motor.setControl(motionMagicTorque.withPosition(position))
     }
 
+    fun setAngle(position: Supplier<Angle>) = run {
+        motor.setControl(motionMagicTorque.withPosition(position.get()))
+    }
+
     override fun periodic() {
         motor.updateInputs()
         Logger.processInputs("Subsystems/$name", motor.inputs)
-        Logger.recordOutput("Turret/isAtResetPoint", isAtResetPoint)
-        Logger.recordOutput("Turret/isAtSetpoint", isAtSetpoint)
+        Logger.recordOutput("Subsystems/$name/isAtResetPoint", isAtResetPoint)
+        Logger.recordOutput("Subsystems/$name/isAtSetpoint", isAtSetpoint)
     }
 }

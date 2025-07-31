@@ -13,6 +13,7 @@ import frc.robot.lib.extensions.rps
 import frc.robot.lib.extensions.sec
 import frc.robot.lib.sysid.SysIdable
 import frc.robot.lib.universal_motor.UniversalTalonFX
+import java.util.function.Supplier
 import org.littletonrobotics.junction.Logger
 
 class Flywheel : SubsystemBase(), SysIdable {
@@ -22,7 +23,6 @@ class Flywheel : SubsystemBase(), SysIdable {
         UniversalTalonFX(AUX_MOTOR_PORT, config = MOTOR_CONFIG)
     private val velocityTorque = VelocityTorqueCurrentFOC(0.0)
     private val voltageOut = VoltageOut(0.0)
-
     private var velocitySetpoint = 0.rps
 
     init {
@@ -40,9 +40,21 @@ class Flywheel : SubsystemBase(), SysIdable {
                 velocitySetpoint = velocity
                 mainMotor.setControl(velocityTorque.withVelocity(velocity))
             }
-            .withName("Flywheel/setVelocity")
+            .withName("$name/setVelocity")
 
-    fun stop() = setVelocity(0.rps).withName("Flywheel/stop")
+    fun setVelocity(velocity: Supplier<AngularVelocity>): Command =
+        run {
+                velocitySetpoint = velocity.get()
+                mainMotor.setControl(
+                    velocityTorque.withVelocity(velocity.get())
+                )
+            }
+            .withName("$name/setVelocity")
+
+    fun slowRotation() =
+        setVelocity(SLOW_ROTATION).withName("$name/slowRotation")
+
+    fun stop() = setVelocity(0.rps).withName("$name/stop")
 
     override fun setVoltage(voltage: Voltage) {
         mainMotor.setControl(voltageOut.withOutput(voltage))
@@ -51,7 +63,7 @@ class Flywheel : SubsystemBase(), SysIdable {
     override fun periodic() {
         mainMotor.updateInputs()
         Logger.processInputs("Subsystems/$name", mainMotor.inputs)
-        Logger.recordOutput("FlyWheel/IsAtSetVelocity", isAtSetVelocity)
-        Logger.recordOutput("FlyWheel/SetVelocity", velocitySetpoint)
+        Logger.recordOutput("Subsystems/$name/IsAtSetVelocity", isAtSetVelocity)
+        Logger.recordOutput("Subsystems/$name/SetVelocity", velocitySetpoint)
     }
 }

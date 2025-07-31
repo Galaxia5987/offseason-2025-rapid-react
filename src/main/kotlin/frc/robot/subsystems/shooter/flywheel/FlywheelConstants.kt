@@ -12,6 +12,7 @@ import frc.robot.lib.extensions.get
 import frc.robot.lib.extensions.rps
 import frc.robot.lib.extensions.sec
 
+val SLOW_ROTATION = 10.rps
 const val MAIN_MOTOR_PORT = 5
 const val AUX_MOTOR_PORT = 6
 val STATOR_CURRENT_LIMIT = 100.amps

@@ -84,6 +84,8 @@ val volts
     get() = Units.Volts
 val kg2m
     get() = Units.KilogramSquareMeters
+val rps
+    get() = Units.RotationsPerSecond
 
 fun LinearVelocity.toAngular(
     diameter: Distance,
@@ -211,4 +213,7 @@ val Number.kilogramSquareMeters: MomentOfInertia
     get() = toUnit(Units.KilogramSquareMeters::of)
 
 operator fun MomentOfInertia.get(unit: MomentOfInertiaUnit): Double =
+    this.`in`(unit)
+
+operator fun AngularVelocity.get(unit: AngularVelocityUnit): Double =
     this.`in`(unit)

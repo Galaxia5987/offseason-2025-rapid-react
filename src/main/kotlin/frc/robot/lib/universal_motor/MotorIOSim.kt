@@ -3,6 +3,8 @@ package frc.robot.lib.universal_motor
 import com.ctre.phoenix6.configs.TalonFXConfiguration
 import com.ctre.phoenix6.controls.ControlRequest
 import edu.wpi.first.math.controller.PIDController
+import edu.wpi.first.math.controller.ProfiledPIDController
+import edu.wpi.first.math.trajectory.TrapezoidProfile
 import edu.wpi.first.units.Units.Rotations
 import edu.wpi.first.units.measure.Distance
 import edu.wpi.first.units.measure.MomentOfInertia
@@ -29,6 +31,16 @@ class MotorIOSim(
     private val diameter: Distance
 ) : MotorIO {
     override val inputs = LoggedMotorInputs()
+    private val profiledPIDController =
+        ProfiledPIDController(
+            config.Slot0.kP,
+            config.Slot0.kI,
+            config.Slot0.kD,
+            TrapezoidProfile.Constraints(
+                config.MotionMagic.MotionMagicCruiseVelocity,
+                config.MotionMagic.MotionMagicAcceleration
+            )
+        )
     private val controller =
         PIDController(config.Slot0.kP, config.Slot0.kI, config.Slot0.kD)
     private val motor =
@@ -36,6 +48,7 @@ class MotorIOSim(
 
     init {
         motor.setController(controller)
+        motor.setProfiledController(profiledPIDController)
     }
 
     override fun setRequest(controlRequest: ControlRequest) {
