@@ -36,6 +36,5 @@ class Hopper : SubsystemBase() {
         motor.updateInputs()
         distanceSensor.updateInputs()
         Logger.processInputs("Subsystems/$name", motor.inputs)
-        Logger.recordOutput("Subsystems/$name/hasBackBall", hasBall)
     }
 }

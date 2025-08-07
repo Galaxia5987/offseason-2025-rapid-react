@@ -139,6 +139,7 @@ public class TalonFXSim extends SimMotor {
 
     public void setControl(ControlRequest request) {
         if (request instanceof DutyCycleOut reqDutyCycleOut) setControl(reqDutyCycleOut);
+        else if (request instanceof Follower) return;
         else if (request instanceof TorqueCurrentFOC reqTorqueCurrentFOC)
             setControl(reqTorqueCurrentFOC);
         else if (request instanceof VoltageOut reqVoltageOut) setControl(reqVoltageOut);

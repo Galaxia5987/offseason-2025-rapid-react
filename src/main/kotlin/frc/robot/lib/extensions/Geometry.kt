@@ -14,7 +14,7 @@ import edu.wpi.first.units.Units.Rotations
 import edu.wpi.first.units.measure.Angle
 import edu.wpi.first.units.measure.Distance
 import frc.robot.IS_RED
-import frc.robot.lib.extensions.get
+import kotlin.math.atan2
 
 fun Pose2d.moveBack(distance: Distance): Pose2d =
     this + Transform2d(-distance, Units.Meters.zero(), Rotation2d.kZero)
@@ -61,6 +61,9 @@ fun Pose2d.toTransform(): Transform2d =
 
 fun Pose2d.distanceFromPoint(translationMeters: Translation2d): Distance =
     Units.Meters.of(this.translation.getDistance(translationMeters))
+
+fun Pose2d.rotationFromPoint(translation: Translation2d): Angle =
+    atan2(this.y - translation.y, this.x - translation.x).rad
 
 fun Pose3d.toTransform(): Transform3d =
     Transform3d(this.translation, this.rotation)

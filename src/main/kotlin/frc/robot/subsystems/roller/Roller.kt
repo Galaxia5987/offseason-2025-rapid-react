@@ -40,17 +40,17 @@ class Roller : SubsystemBase() {
             configuration = CANrangeConfiguration()
         )
 
-    @AutoLogOutput val HasBall = Trigger { rangeSensor.isInRange }
+    @AutoLogOutput val hasBall = Trigger { rangeSensor.isInRange }
 
     private fun setVoltage(voltage: Voltage): Command = runOnce {
         motor.setControl(voltageRequest.withOutput(voltage))
     }
 
-    fun intake(): Command = runOnce { setVoltage(INTAKE) }
+    fun intake(): Command = setVoltage(INTAKE)
 
-    fun outtake(): Command = runOnce { setVoltage(OUTTAKE) }
+    fun outtake(): Command = setVoltage(OUTTAKE)
 
-    fun stop(): Command = runOnce { setVoltage(STOP) }
+    fun stop(): Command = setVoltage(STOP)
 
     override fun periodic() {
         motor.updateInputs()
